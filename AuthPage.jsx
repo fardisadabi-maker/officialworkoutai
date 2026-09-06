@@ -28,7 +28,16 @@ export default function AuthPage() {
       return
     }
     setLoading(true)
-    const result = mode === 'login' ? await supabase.auth.signInWithPassword({ email: email.trim(), password }) : await supabase.auth.signUp({ email: email.trim(), password, options: { data: { display_name: email.split('@')[0] } } })
+    const result = mode === 'login' ? await supabase.auth.signInWithPassword({ email: email.trim(), password }) : await supabase.auth.signUp({
+  email: email.trim(),
+  password,
+  options: {
+    emailRedirectTo: window.location.origin,
+    data: {
+      display_name: email.split('@')[0]
+    }
+  }
+})
     setLoading(false)
     if (result.error) setError(result.error.message)
     else if (mode === 'signup' && !result.data.session) setMessage('Account created. Check your email to confirm your account, then log in.')
